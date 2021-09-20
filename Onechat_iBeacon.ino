@@ -83,7 +83,7 @@ void setup() {
    // Start advertising
   pAdvertising->start();
   Serial.println("Advertizing started...");
-  delay(100);
+//  delay(10);
 //  pAdvertising->stop();
 //  Serial.printf("enter deep sleep\n");
 //  esp_deep_sleep(1e6);
