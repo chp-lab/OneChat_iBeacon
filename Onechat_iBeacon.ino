@@ -46,6 +46,19 @@ struct timeval now;
 #define MIN_INTV 0x64
 #define MAX_INTV 0x100
 
+/**
+ * Bluetooth TX power level(index), it's just a index corresponding to power(dbm).
+ * * ESP_PWR_LVL_N12 (-12 dbm)
+ * * ESP_PWR_LVL_N9  (-9 dbm)
+ * * ESP_PWR_LVL_N6  (-6 dbm)
+ * * ESP_PWR_LVL_N3  (-3 dbm)
+ * * ESP_PWR_LVL_N0  ( 0 dbm)
+ * * ESP_PWR_LVL_P3  (+3 dbm)
+ * * ESP_PWR_LVL_P6  (+6 dbm)
+ * * ESP_PWR_LVL_P9  (+9 dbm)
+ */
+#define POWER_LEVEL ESP_PWR_LVL_N3
+
 void setBeacon() {
 
   BLEBeacon oBeacon = BLEBeacon();
@@ -80,7 +93,9 @@ void setup() {
   Serial.begin(115200);
   
   // Create the BLE Device
-  BLEDevice::init("iBeacon");
+  String beacon_name = "iBeacon";
+  BLEDevice::init(beacon_name.c_str());
+  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, POWER_LEVEL);
 
   // Create the BLE Server
   // BLEServer *pServer = BLEDevice::createServer(); // <-- no longer required to instantiate BLEServer, less flash and ram usage
