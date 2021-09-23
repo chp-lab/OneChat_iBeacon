@@ -39,7 +39,7 @@ struct timeval now;
 
 #define BEACON_UUID           "b4b89731-4797-dc8a-3a48-d53c424fa9c8" // UUID 1 128-Bit (may use linux tool uuidgen or random numbers via https://www.uuidgenerator.net/)
 #define MFID 0x4C00
-#define MAJOR 0x8002
+#define MAJOR 0x8004
 #define MINOR 0x03E8
 #define TX_POWER 0xC3
 #define APPLE_FLAG 0x04
@@ -72,12 +72,15 @@ void setBeacon() {
   BLEAdvertisementData oScanResponseData = BLEAdvertisementData();
   
   oAdvertisementData.setFlags(APPLE_FLAG); // BR_EDR_NOT_SUPPORTED 0x04
+  String ib_name = "OneBeacon-" + String(MAJOR) + "-" + String(MINOR);
+//  oAdvertisementData.setName(ib_name.c_str());
   
   std::string strServiceData = "";
   
   strServiceData += (char)26;     // Len
   strServiceData += (char)0xFF;   // Type
   strServiceData += oBeacon.getData(); 
+  
   oAdvertisementData.addData(strServiceData);
   
   pAdvertising->setAdvertisementData(oAdvertisementData);
@@ -93,8 +96,7 @@ void setup() {
   Serial.begin(115200);
   
   // Create the BLE Device
-  String beacon_name = "iBeacon";
-  BLEDevice::init(beacon_name.c_str());
+  BLEDevice::init("");
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, POWER_LEVEL);
 
   // Create the BLE Server
@@ -106,11 +108,11 @@ void setup() {
    // Start advertising
   pAdvertising->start();
   Serial.println("Advertizing started...");
-//  delay(10);
-//  pAdvertising->stop();
-//  Serial.printf("enter deep sleep\n");
-//  esp_deep_sleep(1e6);
-//  Serial.printf("in deep sleep\n");
+  delay(1000);
+  pAdvertising->stop();
+  Serial.printf("enter deep sleep\n");
+  esp_deep_sleep(5e5);
+  Serial.printf("in deep sleep\n");
 }
 
 void loop() {
